@@ -1,0 +1,29 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: driver-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: driver_performance
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7
+    container_name: driver-redis
+    ports:
+      - "6379:6379"
+
+  metabase:
+    image: metabase/metabase:latest
+    container_name: driver-metabase
+    ports:
+      - "3001:3000"
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
