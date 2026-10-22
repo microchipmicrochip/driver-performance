@@ -1,5 +1,6 @@
 import WeeklyChart from "../../components/WeeklyChart";
 import MetricsCards from "../../components/MetricsCards";
+import TopDriversChart from "../../components/TopDriversChart";
 
 export default function DashboardPage() {
     return (
@@ -8,9 +9,11 @@ export default function DashboardPage() {
 
             <MetricsCards />
 
-            <p>Weekly delays and average driver ratings</p>
-
+            <h2>Weekly Performance</h2>
             <WeeklyChart />
+
+            <h2>Top Drivers by Violations</h2>
+            <TopDriversChart />
         </main>
     );
 }
