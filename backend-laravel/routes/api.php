@@ -17,3 +17,8 @@ Route::get('/metrics/driver/{driverId}', [
     DriverMetricsController::class,
     'driverDetails',
 ]);
+
+Route::get('/metrics/interventions', [
+    DriverMetricsController::class,
+    'interventions',
+]);

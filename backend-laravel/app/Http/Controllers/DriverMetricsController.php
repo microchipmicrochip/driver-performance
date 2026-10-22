@@ -8,13 +8,36 @@ use Illuminate\Http\Request;
 
 class DriverMetricsController extends Controller
 {
-    public function weeklySummary()
+        public function weeklySummary(Request $request)
     {
+        $request->validate([
+            'start' => 'nullable|date',
+            'end' => 'nullable|date|after_or_equal:start',
+        ]);
+
+        $start = $request->query('start');
+        $end = $request->query('end');
+
+        $cacheKey = 'weekly_summary:'
+            . ($start ?? 'all')
+            . ':'
+            . ($end ?? 'all');
+
         $data = Cache::remember(
-            'weekly_summary',
+            $cacheKey,
             now()->addMinutes(5),
-            function () {
-                return DB::table('driver_profiles')
+            function () use ($start, $end) {
+                $query = DB::table('driver_profiles');
+
+                if ($start) {
+                    $query->whereDate('date', '>=', $start);
+                }
+
+                if ($end) {
+                    $query->whereDate('date', '<=', $end);
+                }
+
+                return $query
                     ->select(
                         DB::raw("DATE_TRUNC('week', date) AS week"),
                         DB::raw('SUM(delays_minutes) AS total_delays'),
@@ -56,16 +79,38 @@ class DriverMetricsController extends Controller
 
         return response()->json($data);
     }
-    public function driverDetails(string $driverId)
+    
+        public function driverDetails(Request $request, string $driverId)
     {
-        $cacheKey = "driver_details:{$driverId}";
+        $request->validate([
+            'start' => 'nullable|date',
+            'end' => 'nullable|date|after_or_equal:start',
+        ]);
+
+        $start = $request->query('start');
+        $end = $request->query('end');
+
+        $cacheKey = 'driver_details:'
+            . $driverId . ':'
+            . ($start ?? 'all') . ':'
+            . ($end ?? 'all');
 
         $data = Cache::remember(
             $cacheKey,
             now()->addMinutes(5),
-            function () use ($driverId) {
-                return DB::table('driver_profiles')
-                    ->where('driver_id', $driverId)
+            function () use ($driverId, $start, $end) {
+                $query = DB::table('driver_profiles')
+                    ->where('driver_id', $driverId);
+
+                if ($start) {
+                    $query->whereDate('date', '>=', $start);
+                }
+
+                if ($end) {
+                    $query->whereDate('date', '<=', $end);
+                }
+
+                return $query
                     ->orderBy('date')
                     ->get();
             }
