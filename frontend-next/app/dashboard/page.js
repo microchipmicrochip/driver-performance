@@ -5,7 +5,7 @@ import WeeklyChart from "../../components/WeeklyChart";
 import MetricsCards from "../../components/MetricsCards";
 import TopDriversChart from "../../components/TopDriversChart";
 import DriverSelect from "../../components/DriverSelect";
-
+import DriverDetailsChart from "../../components/DriverDetailsChart";
 
 export default function DashboardPage() {
     const [startDate, setStartDate] = useState("");
@@ -47,6 +47,14 @@ export default function DashboardPage() {
             <DriverSelect
                 selectedDriver={selectedDriver}
                 onSelect={setSelectedDriver}
+            />
+
+            <h2>Selected Driver Performance</h2>
+
+            <DriverDetailsChart
+                driverId={selectedDriver}
+                startDate={startDate}
+                endDate={endDate}
             />
 
             <h2>Weekly Performance</h2>
