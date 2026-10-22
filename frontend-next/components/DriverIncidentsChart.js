@@ -26,21 +26,21 @@ export default function DriverIncidentsChart({
     startDate,
     endDate,
 }) {
-    if (!driverId) {
-        return <p>Select a driver to view incidents.</p>;
-    }
-
     const params = new URLSearchParams();
 
     if (startDate) params.append("start", startDate);
     if (endDate) params.append("end", endDate);
 
     const query = params.toString();
-
-    const url = `/api/proxy/metrics/driver/${driverId}${query ? `?${query}` : ""
-        }`;
+    const url = driverId
+        ? `/api/proxy/metrics/driver/${driverId}${query ? `?${query}` : ""}`
+        : null;
 
     const { data, error, isLoading } = useSWR(url, fetcher);
+
+    if (!driverId) {
+        return <p>Select a driver to view incidents.</p>;
+    }
 
     if (isLoading) return <p>Loading incidents...</p>;
     if (error) return <p>Failed to load incidents.</p>;

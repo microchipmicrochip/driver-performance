@@ -28,20 +28,21 @@ export default function DriverDetailsChart({
     startDate,
     endDate,
 }) {
-    if (!driverId) {
-        return <p>Select a driver to view details.</p>;
-    }
-
     const params = new URLSearchParams();
 
     if (startDate) params.append("start", startDate);
     if (endDate) params.append("end", endDate);
 
     const query = params.toString();
-    const url = `/api/proxy/metrics/driver/${driverId}${query ? `?${query}` : ""
-        }`;
+    const url = driverId
+        ? `/api/proxy/metrics/driver/${driverId}${query ? `?${query}` : ""}`
+        : null;
 
     const { data, error, isLoading } = useSWR(url, fetcher);
+
+    if (!driverId) {
+        return <p>Select a driver to view details.</p>;
+    }
 
     if (isLoading) return <p>Loading driver details...</p>;
     if (error) return <p>Failed to load driver details.</p>;
