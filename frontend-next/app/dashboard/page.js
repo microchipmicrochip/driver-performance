@@ -4,10 +4,13 @@ import { useState } from "react";
 import WeeklyChart from "../../components/WeeklyChart";
 import MetricsCards from "../../components/MetricsCards";
 import TopDriversChart from "../../components/TopDriversChart";
+import DriverSelect from "../../components/DriverSelect";
+
 
 export default function DashboardPage() {
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
+    const [selectedDriver, setSelectedDriver] = useState("");
 
     return (
         <main style={{ padding: "24px" }}>
@@ -36,6 +39,15 @@ export default function DashboardPage() {
                     onChange={(event) => setEndDate(event.target.value)}
                 />
             </label>
+
+            <br />
+            <br />
+            <br />
+
+            <DriverSelect
+                selectedDriver={selectedDriver}
+                onSelect={setSelectedDriver}
+            />
 
             <h2>Weekly Performance</h2>
 
