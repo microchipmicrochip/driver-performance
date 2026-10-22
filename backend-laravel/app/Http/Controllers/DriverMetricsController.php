@@ -157,4 +157,48 @@ class DriverMetricsController extends Controller
 
         return response()->json($data);
     }
+
+
+
+        public function ratingTrends(Request $request)
+    {
+        $request->validate([
+            'start' => 'nullable|date',
+            'end' => 'nullable|date|after_or_equal:start',
+        ]);
+
+        $start = $request->query('start');
+        $end = $request->query('end');
+
+        $cacheKey = 'rating_trends:'
+            . ($start ?? 'all') . ':'
+            . ($end ?? 'all');
+
+        $data = Cache::remember(
+            $cacheKey,
+            now()->addMinutes(5),
+            function () use ($start, $end) {
+                $query = DB::table('driver_profiles');
+
+                if ($start) {
+                    $query->whereDate('date', '>=', $start);
+                }
+
+                if ($end) {
+                    $query->whereDate('date', '<=', $end);
+                }
+
+                return $query
+                    ->select(
+                        DB::raw("DATE_TRUNC('week', date) AS week"),
+                        DB::raw('AVG(rating) AS avg_rating')
+                    )
+                    ->groupByRaw("DATE_TRUNC('week', date)")
+                    ->orderBy('week')
+                    ->get();
+            }
+        );
+
+        return response()->json($data);
+    }
 }
