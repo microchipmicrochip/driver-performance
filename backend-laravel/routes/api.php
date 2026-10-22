@@ -27,3 +27,8 @@ Route::get('/metrics/rating-trends', [
     DriverMetricsController::class,
     'ratingTrends',
 ]);
+
+Route::get('/drivers', [
+    DriverMetricsController::class,
+    'drivers',
+]);

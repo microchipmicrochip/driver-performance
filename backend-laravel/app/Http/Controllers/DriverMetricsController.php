@@ -201,4 +201,22 @@ class DriverMetricsController extends Controller
 
         return response()->json($data);
     }
+
+
+        public function drivers()
+    {
+        $data = Cache::remember(
+            'drivers_list',
+            now()->addMinutes(5),
+            function () {
+                return DB::table('driver_profiles')
+                    ->select('driver_id')
+                    ->distinct()
+                    ->orderBy('driver_id')
+                    ->get();
+            }
+        );
+
+        return response()->json($data);
+    }
 }
