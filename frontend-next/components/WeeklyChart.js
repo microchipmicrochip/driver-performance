@@ -23,15 +23,20 @@ ChartJS.register(
 
 const fetcher = (url) => fetch(url).then((response) => response.json());
 
-export default function WeeklyChart() {
-    const { data, error, isLoading } = useSWR(
-        "/api/proxy/metrics/weekly",
-        fetcher
-    );
+export default function WeeklyChart({ startDate, endDate }) {
+    const params = new URLSearchParams();
+
+    if (startDate) params.append("start", startDate);
+    if (endDate) params.append("end", endDate);
+
+    const query = params.toString();
+    const url = `/api/proxy/metrics/weekly${query ? `?${query}` : ""}`;
+
+    const { data, error, isLoading } = useSWR(url, fetcher);
 
     if (isLoading) return <p>Loading chart...</p>;
     if (error) return <p>Failed to load chart.</p>;
-    if (!data) return null;
+    if (!data || data.length === 0) return <p>No data found.</p>;
 
     const chartData = {
         labels: data.map((row) =>
