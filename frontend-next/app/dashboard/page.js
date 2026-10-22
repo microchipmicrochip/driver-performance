@@ -6,6 +6,7 @@ import MetricsCards from "../../components/MetricsCards";
 import TopDriversChart from "../../components/TopDriversChart";
 import DriverSelect from "../../components/DriverSelect";
 import DriverDetailsChart from "../../components/DriverDetailsChart";
+import DriverDetailsTable from "../../components/DriverDetailsTable";
 
 export default function DashboardPage() {
     const [startDate, setStartDate] = useState("");
@@ -52,6 +53,12 @@ export default function DashboardPage() {
             <h2>Selected Driver Performance</h2>
 
             <DriverDetailsChart
+                driverId={selectedDriver}
+                startDate={startDate}
+                endDate={endDate}
+            />
+
+            <DriverDetailsTable
                 driverId={selectedDriver}
                 startDate={startDate}
                 endDate={endDate}
