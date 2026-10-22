@@ -56,4 +56,27 @@ class DriverMetricsController extends Controller
 
         return response()->json($data);
     }
+    public function driverDetails(string $driverId)
+    {
+        $cacheKey = "driver_details:{$driverId}";
+
+        $data = Cache::remember(
+            $cacheKey,
+            now()->addMinutes(5),
+            function () use ($driverId) {
+                return DB::table('driver_profiles')
+                    ->where('driver_id', $driverId)
+                    ->orderBy('date')
+                    ->get();
+            }
+        );
+
+        if ($data->isEmpty()) {
+            return response()->json([
+                'message' => 'Driver not found.',
+            ], 404);
+        }
+
+        return response()->json($data);
+    }
 }
