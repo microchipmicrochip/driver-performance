@@ -7,6 +7,7 @@ import TopDriversChart from "../../components/TopDriversChart";
 import DriverSelect from "../../components/DriverSelect";
 import DriverDetailsChart from "../../components/DriverDetailsChart";
 import DriverDetailsTable from "../../components/DriverDetailsTable";
+import DriverIncidentsChart from "../../components/DriverIncidentsChart";
 
 export default function DashboardPage() {
     const [startDate, setStartDate] = useState("");
@@ -63,6 +64,16 @@ export default function DashboardPage() {
                 startDate={startDate}
                 endDate={endDate}
             />
+
+            <h2>Selected Driver Incidents</h2>
+
+            <DriverIncidentsChart
+                driverId={selectedDriver}
+                startDate={startDate}
+                endDate={endDate}
+            />
+
+
 
             <h2>Weekly Performance</h2>
 
