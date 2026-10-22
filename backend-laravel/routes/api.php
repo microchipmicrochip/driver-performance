@@ -7,3 +7,8 @@ Route::get('/metrics/weekly', [
     DriverMetricsController::class,
     'weeklySummary',
 ]);
+
+Route::get('/metrics/top-drivers', [
+    DriverMetricsController::class,
+    'topDrivers',
+]);
