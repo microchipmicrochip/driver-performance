@@ -79,7 +79,7 @@ class DriverMetricsController extends Controller
 
         return response()->json($data);
     }
-    
+
         public function driverDetails(Request $request, string $driverId)
     {
         $request->validate([
@@ -121,6 +121,39 @@ class DriverMetricsController extends Controller
                 'message' => 'Driver not found.',
             ], 404);
         }
+
+        return response()->json($data);
+    }
+
+        public function interventions(Request $request)
+    {
+        $threshold = max(
+            (int) $request->query('threshold', 100),
+            0
+        );
+
+        $cacheKey = "interventions:{$threshold}";
+
+        $data = Cache::remember(
+            $cacheKey,
+            now()->addMinutes(5),
+            function () use ($threshold) {
+                return DB::table('driver_profiles')
+                    ->select(
+                        'driver_id',
+                        DB::raw('SUM(accidents_count) AS total_accidents'),
+                        DB::raw('SUM(violations_count) AS total_violations'),
+                        DB::raw('AVG(rating) AS avg_rating')
+                    )
+                    ->groupBy('driver_id')
+                    ->havingRaw(
+                        'SUM(accidents_count) >= ?',
+                        [$threshold]
+                    )
+                    ->orderByDesc('total_accidents')
+                    ->get();
+            }
+        );
 
         return response()->json($data);
     }
